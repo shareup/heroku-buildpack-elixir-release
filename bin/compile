@@ -1,0 +1,125 @@
+#!/usr/bin/env bash
+# bin/compile <build-dir> <cache-dir> <env-dir>
+
+set -o errexit    # always exit on error
+set -o pipefail   # do not ignore exit codes when piping output
+set -o nounset    # fail on unset variables
+unset GIT_DIR     # Avoid GIT_DIR leak from previous build steps
+
+### Directories
+
+BUILD_DIR="${1:-}"
+CACHE_DIR="${2:-}"
+ENV_DIR="${3:-}"
+BP_DIR="$(cd $(dirname ${0:-}); cd ..; pwd)"
+
+cd "$BUILD_DIR"
+mkdir -p "$BUILD_DIR/.heroku/erlang/"
+mkdir -p "$BUILD_DIR/.heroku/elixir/"
+export PATH="$BUILD_DIR/.heroku/elixir/bin":"$BUILD_DIR/.heroku/erlang/bin":$PATH
+
+LOG_FILE='/tmp/elixir-build-log.txt'
+echo "" > "$LOG_FILE"
+
+### Dependencies
+
+source "$BP_DIR/lib/output.sh"
+source "$BP_DIR/lib/export_env_dir.sh"
+source "$BP_DIR/lib/failure.sh"
+source "$BP_DIR/lib/check_stack.sh"
+source "$BP_DIR/lib/download_and_install.sh"
+
+### Trap errors
+
+handle_failure() {
+  output_header "Build failed"
+  failure_message | output "$LOG_FILE"
+}
+
+trap 'handle_failure' ERR
+
+### Compile
+
+output_header "Creating runtime environment"
+
+#### Profile
+
+mkdir -p "$BUILD_DIR/.profile.d"
+cp "$BP_DIR/profile/*" "$BUILD_DIR/.profile.d/"
+
+#### Default ENV vars
+
+export_env_dir "$ENV_DIR"
+
+MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
+MIX_ENV="${MIX_ENV:-prod}"
+OTP_VERSION="${OTP_VERSION:-21.0}"
+ELIXIR_VERSION="${ELIXIR_VERSION:-1.7.0}"
+
+#### Log the current important ENV vars
+
+echo "" | output "$LOG_FILE"
+printenv | grep '^MIX_|^OTP_|^ELIXIR_' | output "$LOG_FILE"
+
+#### Remove cache if ALWAYS_REBUILD
+
+if [ "$ALWAYS_REBUILD" = "true" ]; then
+  output_info "ALWAYS_REBUILD=true so Cleaning all caches"
+  rm -rf "$CACHE_DIR/*"
+fi
+
+#### Check the heroku stack
+
+check_stack "$CACHE_DIR" "$STACK" | output "$LOG_FILE"
+
+#### Get erlang and elixir
+
+download_and_install_erlang "$OTP_VERSION" "$BUILD_DIR/.heroku/erlang" "$CACHE_DIR/otp" | output "$LOG_FILE"
+download_and_install_elixir "$ELIXIR_VERSION" "$OTP_VERSION" "$BUILD_DIR/.heroku/elixir" "$CACHE_DIR/elixir" | output "$LOG_FILE"
+
+#### mix and hex
+
+##### Restore cached mix and hex configs
+
+if [ -d "$CACHE_DIR/elixir/mix" ]; then
+  cp -pR "$CACHE_DIR/elixir/mix" "$BUILD_DIR/.mix"
+fi
+
+if [ -d "$CACHE_DIR/elixir/hex" ]; then
+  cp -pR "$CACHE_DIR/elixir/hex" "$BUILD_DIR/.hex"
+fi
+
+##### Install hex and rebar if they are missing
+
+mix local.hex --if-missing
+mix local.rebar --if-missing
+
+#### Restore deps and _build
+
+if [ -d "$CACHE_DIR/elixir/deps" ]; then
+  cp -pR "$CACHE_DIR/elixir/deps" "$BUILD_DIR/deps"
+fi
+
+if [ -d "$CACHE_DIR/elixir/_build" ]; then
+  cp -pR "$CACHE_DIR/elixir/_build" "$BUILD_DIR/_build"
+fi
+
+#### Build the app
+
+mix deps.get --only "$MIX_ENV" || (echo "Fetching mix deps failed" && exit 1)
+mix compile --force || (echo "Compilation failed" && exit 1)
+mix deps.clean --unused
+
+#### Cache artifacts
+
+rm -rf "$CACHE_DIR/elixir/mix"
+rm -rf "$CACHE_DIR/elixir/hex"
+rm -rf "$CACHE_DIR/elixir/deps"
+rm -rf "$CACHE_DIR/elixir/_build"
+
+cp -pR "$BUILD_DIR/.mix" "$CACHE_DIR/elixir/mix"
+cp -pR "$BUILD_DIR/.hex" "$CACHE_DIR/elixir/hex"
+cp -pR "$BUILD_DIR/deps" "$CACHE_DIR/elixir/deps"
+cp -pR "$BUILD_DIR/_build" "$CACHE_DIR/elixir/_build"
+
+output_info "Compiled."

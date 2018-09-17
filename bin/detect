@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+if [ -f $1/mix.exs ]; then
+  echo Elixir
+  exit 0
+else
+  exit 1
+fi
