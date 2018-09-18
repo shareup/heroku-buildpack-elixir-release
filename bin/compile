@@ -62,7 +62,7 @@ RELEASE_NAME="${RELEASE_NAME:-default}"
 
 echo "" | output "$LOG_FILE"
 
-printenv | grep '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_)' | output "$LOG_FILE"
+printenv | grep '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_)'
 
 #### Profile
 
