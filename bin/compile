@@ -69,7 +69,7 @@ printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_|PATH)' | output "$LO
 #### Profile
 
 mkdir -p "$BUILD_DIR/.profile.d"
-cp -vR "$BP_DIR/profile/*" "$BUILD_DIR/.profile.d/"
+cp -avr "$BP_DIR/profile/." "$BUILD_DIR/.profile.d/"
 
 #### Remove cache if ALWAYS_REBUILD
 
