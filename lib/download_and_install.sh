@@ -62,12 +62,12 @@ download_and_install_elixir() {
     rm -rf "$install_dir/*"
 
     echo "Downloading elixir $elixir_version"
-    curl -s "$url" -o "$tarpath"
+    curl -# "$url" -o "$tarpath"
 
     if [ "$?" -ne "0" ]; then
       echo "Unable to download an elixir for OTP $otp_version, falling back to generic elixir version"
       local fallback_url="https://repo.hex.pm/builds/elixir/v$elixir_version.zip"
-      curl -s "$fallback_url" -o "$tarpath" || (echo "Unable to download elixir" && exit 1)
+      curl -# "$fallback_url" -o "$tarpath" || (echo "Unable to download elixir" && exit 1)
     fi
 
     unzip -q "$tarpath" -d "$install_dir/"
@@ -96,7 +96,7 @@ download_and_install_node() {
 
   if [ ! -f "$tarpath" ]; then
     echo "Downloading node"
-    curl -s "$url" -o "$tarpath" || (echo "Unable to download node" && exit 1)
+    curl -# "$url" -o "$tarpath" || (echo "Unable to download node" && exit 1)
 
     tar xzf "$tarpath" -C "$install_dir" --strip-components=1
 
