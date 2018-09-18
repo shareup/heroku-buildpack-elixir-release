@@ -84,10 +84,15 @@ check_stack "$CACHE_DIR" "$STACK" | output "$LOG_FILE"
 
 #### Get erlang and elixir
 
+mkdir -p "$CACHE_DIR/otp"
+mkdir -p "$CACHE_DIR/elixir"
+
 download_and_install_erlang "$OTP_VERSION" "$BUILD_DIR/.heroku/erlang" "$CACHE_DIR/otp" | output "$LOG_FILE"
 download_and_install_elixir "$ELIXIR_VERSION" "$OTP_VERSION" "$BUILD_DIR/.heroku/elixir" "$CACHE_DIR/elixir" | output "$LOG_FILE"
 
 #### Get node
+
+mkdir -p "$CACHE_DIR/node"
 
 if [[ "$SKIP_NODE" != "true" ]]; then
   download_and_install_node "$NODE_VERSION" "$NPM_VERSION" "$BUILD_DIR/.heroku/node" "$CACHE_DIR/node" | output "$LOG_FILE"
