@@ -50,6 +50,8 @@ output_header "Creating runtime environment"
 
 export_env_dir "$ENV_DIR"
 
+output_info "Exported the env dir"
+
 MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
 MIX_ENV="${MIX_ENV:-prod}"
 OTP_VERSION="${OTP_VERSION:-21.0}"
@@ -63,6 +65,7 @@ RELEASE_NAME="${RELEASE_NAME:-default}"
 echo "" | output "$LOG_FILE"
 
 printenv | grep '^MIX_\|^OTP_\|^ELIXIR_\|^NODE_\|^NPM_\|^RELEASE_'
+output_info "Printed important env vars"
 
 #### Profile
 
