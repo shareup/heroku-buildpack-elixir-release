@@ -10,4 +10,6 @@ export_env_dir() {
       echo "$e" | grep -qvE '^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$' && export $e=$(cat $env_dir/$e)
     done
   fi
+
+  echo "env stuff worked"
 }
