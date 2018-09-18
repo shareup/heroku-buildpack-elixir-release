@@ -64,12 +64,12 @@ ALWAYS_REBUILD="${ALWAYS_REBUILD:-false}"
 #### Log the current important ENV vars
 
 echo "" | output "$LOG_FILE"
-printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_|PATH)' | output "$LOG_FILE"
+printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_|DYNO)' | output "$LOG_FILE"
 
 #### Profile
 
 mkdir -p "$BUILD_DIR/.profile.d"
-cp -avr "$BP_DIR/profile/." "$BUILD_DIR/.profile.d/"
+cp -ar "$BP_DIR/profile/." "$BUILD_DIR/.profile.d/"
 
 #### Remove cache if ALWAYS_REBUILD
 
