@@ -8,10 +8,11 @@ download_and_install_erlang() {
   mkdir -p "$install_dir"
   mkdir -p "$cache_dir"
 
-  local filename="OTP-$otp_version.tar.gz"
-  local url="https://s3.amazonaws.com/heroku-buildpack-elixir/erlang/cedar-14/$filename"
+  local filename="otp_src_$otp_version.tar.gz"
+  local url="http://erlang.org/download/$filename"
   local tarpath="$cache_dir/$filename"
   local build_dir="$cache_dir/build/"
+  export ERL_TOP="$build_dir"
 
   mkdir -p "$build_dir"
 
@@ -23,7 +24,14 @@ download_and_install_erlang() {
     curl -s "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
 
     tar xzf "$tarpath" -C "$build_dir" --strip-components=1
-    $build_dir/Install -minimal "$install_dir"
+
+    cd $build_dir
+    .configure
+    make
+    make RELEASE_ROOT="$install_dir" release
+    cd -
+
+    $install_dir/Install -minimal "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
