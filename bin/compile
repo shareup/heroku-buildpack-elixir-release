@@ -48,7 +48,6 @@ output_header "Creating runtime environment"
 
 #### Default ENV vars
 
-output_info "Exporting the env dir vars"
 export_env_dir "$ENV_DIR"
 
 MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
