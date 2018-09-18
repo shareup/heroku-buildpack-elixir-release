@@ -22,8 +22,8 @@ export PATH="$BUILD_DIR/.heroku/elixir/bin:$BUILD_DIR/.heroku/erlang/bin:$BUILD_
 LOG_FILE='/tmp/elixir-build-log.txt'
 echo "" > "$LOG_FILE"
 
-MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
-MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
+export MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
+export MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
 
 ### Dependencies
 
@@ -52,14 +52,14 @@ export_env_dir "$ENV_DIR"
 
 output_info "Exported the env dir"
 
-MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
-MIX_ENV="${MIX_ENV:-prod}"
-OTP_VERSION="${OTP_VERSION:-21.0}"
-ELIXIR_VERSION="${ELIXIR_VERSION:-1.7.0}"
-NODE_VERSION="${NODE_VERSION:-10.9.0}"
-NPM_VERSION="${NPM_VERSION:-6.4.1}"
-RELEASE_NAME="${RELEASE_NAME:-default}"
-ALWAYS_REBUILD="${ALWAYS_REBUILD:-false}"
+export MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
+export MIX_ENV="${MIX_ENV:-prod}"
+export OTP_VERSION="${OTP_VERSION:-21.0}"
+export ELIXIR_VERSION="${ELIXIR_VERSION:-1.7.0}"
+export NODE_VERSION="${NODE_VERSION:-10.9.0}"
+export NPM_VERSION="${NPM_VERSION:-6.4.1}"
+export RELEASE_NAME="${RELEASE_NAME:-default}"
+export ALWAYS_REBUILD="${ALWAYS_REBUILD:-false}"
 
 #### Log the current important ENV vars
 

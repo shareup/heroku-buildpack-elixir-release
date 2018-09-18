@@ -25,6 +25,8 @@ download_and_install_erlang() {
 
     tar xzf "$tarpath" -C "$build_dir" --strip-components=1
 
+    echo "Compiling erlang, this could take a few minutes"
+
     cd $build_dir
     .configure
     make
