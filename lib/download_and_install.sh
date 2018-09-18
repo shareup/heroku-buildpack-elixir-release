@@ -20,10 +20,10 @@ download_and_install_erlang() {
     rm -rf "$install_dir/*"
 
     echo "Downloading OTP $otp_version"
-    curl "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
+    curl -s "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
 
     tar xzf "$tarpath" -C "$build_dir" --strip-components=1
-    $build_path/Install -minimal "$install_dir"
+    $build_dir/Install -minimal "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
