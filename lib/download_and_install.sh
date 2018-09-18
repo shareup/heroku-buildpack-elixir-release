@@ -5,6 +5,8 @@ download_and_install_erlang() {
   local install_dir="$2"
   local cache_dir="$3"
 
+  mkdir -p "$cache_dir"
+
   local filename="OTP-$otp_version.tar.gz"
   local url="https://s3.amazonaws.com/heroku-buildpack-elixir/erlang/cedar-14/$filename"
   local tarpath="$cache_dir/$filename"
@@ -33,6 +35,8 @@ download_and_install_elixir() {
   local otp_version="$2"
   local install_dir="$3"
   local cache_dir="$4"
+
+  mkdir -p "$cache_dir"
 
   local filename="$elixir_version-otp-$otp_version.zip"
   local url="https://repo.hex.pm/builds/elixir/v$filename"
@@ -67,6 +71,8 @@ download_and_install_node() {
   local npm_version="$2"
   local install_dir="$3"
   local cache_dir="$4"
+
+  mkdir -p "$cache_dir"
 
   local os="$(uname | tr A-Z a-z)"
   local filename="node-v$version-$os-x86.tar.gz"
