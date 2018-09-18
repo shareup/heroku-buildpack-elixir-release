@@ -7,7 +7,7 @@ export_env_dir() {
 
   if [ -d "$env_dir" ]; then
     for e in $(ls $env_dir); do
-      echo "$e" | grep -qvE '^(PATH|GIT_DIR|CPATH|CPPATH|LD_PRELOAD|LIBRARY_PATH)$' && export $e=$(cat $env_dir/$e)
+      echo "$e" | grep -qv '^PATH$\|^GIT_DIR$\|^CPATH$\|^CPPATH$\|^LD_PRELOAD$\|^LIBRARY_PATH$' && export $e=$(cat $env_dir/$e)
     done
   fi
 }
