@@ -61,9 +61,8 @@ RELEASE_NAME="${RELEASE_NAME:-default}"
 #### Log the current important ENV vars
 
 echo "" | output "$LOG_FILE"
-echo "wrote to log file"
-printenv | grep '^MIX_|^OTP_|^ELIXIR_|^NODE_|^NPM_|^RELEASE_' | output "$LOG_FILE"
-echo "printed important env vars"
+
+printenv | grep '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_)' | output "$LOG_FILE"
 
 #### Profile
 
