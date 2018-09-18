@@ -63,14 +63,11 @@ RELEASE_NAME="${RELEASE_NAME:-default}"
 #### Log the current important ENV vars
 
 echo "" | output "$LOG_FILE"
-output_info "Wrote to log file"
-
-printenv | output "$LOG_FILE"
-
-printenv | grep '^MIX_\|^OTP_\|^ELIXIR_\|^NODE_\|^NPM_\|^RELEASE_' | output "$LOG_FILE"
-output_info "Printed important env vars"
+printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_|PATH)' | output "$LOG_FILE"
 
 #### Profile
+
+ls $BUILD_DIR
 
 mkdir -p "$BUILD_DIR/.profile.d"
 cp "$BP_DIR/profile/*" "$BUILD_DIR/.profile.d/"
