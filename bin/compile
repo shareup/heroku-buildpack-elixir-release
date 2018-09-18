@@ -67,7 +67,7 @@ printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_|PATH)' | output "$LO
 
 #### Profile
 
-ls $BP_DIR
+ls $BP_DIR/profile
 
 mkdir -p "$BUILD_DIR/.profile.d"
 cp "$BP_DIR/profile/*" "$BUILD_DIR/.profile.d/"
