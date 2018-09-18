@@ -16,10 +16,14 @@ BP_DIR="$(cd $(dirname ${0:-}); cd ..; pwd)"
 cd "$BUILD_DIR"
 mkdir -p "$BUILD_DIR/.heroku/erlang/"
 mkdir -p "$BUILD_DIR/.heroku/elixir/"
-export PATH="$BUILD_DIR/.heroku/elixir/bin":"$BUILD_DIR/.heroku/erlang/bin":$PATH
+mkdir -p "$BUILD_DIR/.heroku/node/"
+export PATH="$BUILD_DIR/.heroku/elixir/bin:$BUILD_DIR/.heroku/erlang/bin:$BUILD_DIR/.heroku/node/bin:$PATH"
 
 LOG_FILE='/tmp/elixir-build-log.txt'
 echo "" > "$LOG_FILE"
+
+MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
+MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
 
 ### Dependencies
 
@@ -55,16 +59,19 @@ MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
 MIX_ENV="${MIX_ENV:-prod}"
 OTP_VERSION="${OTP_VERSION:-21.0}"
 ELIXIR_VERSION="${ELIXIR_VERSION:-1.7.0}"
+NODE_VERSION="${NODE_VERSION:-10.9.0}"
+NPM_VERSION="${NPM_VERSION:-6.4.1}"
+RELEASE_NAME="${RELEASE_NAME:-default}"
 
 #### Log the current important ENV vars
 
 echo "" | output "$LOG_FILE"
-printenv | grep '^MIX_|^OTP_|^ELIXIR_' | output "$LOG_FILE"
+printenv | grep '^MIX_|^OTP_|^ELIXIR_|^NODE_|^NPM_|^RELEASE_' | output "$LOG_FILE"
 
 #### Remove cache if ALWAYS_REBUILD
 
 if [ "$ALWAYS_REBUILD" = "true" ]; then
-  output_info "ALWAYS_REBUILD=true so Cleaning all caches"
+  output_info "ALWAYS_REBUILD=true so cleaning all caches"
   rm -rf "$CACHE_DIR/*"
 fi
 
@@ -76,6 +83,12 @@ check_stack "$CACHE_DIR" "$STACK" | output "$LOG_FILE"
 
 download_and_install_erlang "$OTP_VERSION" "$BUILD_DIR/.heroku/erlang" "$CACHE_DIR/otp" | output "$LOG_FILE"
 download_and_install_elixir "$ELIXIR_VERSION" "$OTP_VERSION" "$BUILD_DIR/.heroku/elixir" "$CACHE_DIR/elixir" | output "$LOG_FILE"
+
+#### Get node
+
+if [[ "$SKIP_NODE" != "true" ]]; then
+  download_and_install_node "$NODE_VERSION" "$NPM_VERSION" "$BUILD_DIR/.heroku/node" "$CACHE_DIR/node" | output "$LOG_FILE"
+fi
 
 #### mix and hex
 
@@ -104,11 +117,22 @@ if [ -d "$CACHE_DIR/elixir/_build" ]; then
   cp -pR "$CACHE_DIR/elixir/_build" "$BUILD_DIR/_build"
 fi
 
+if [ -d "$BUILD_DIR/assets/package.json" ]; then
+  if [ -d "$CACHE_DIR/node/node_modules" ]; then
+    cp -pR "$CACHE_DIR/node/node_modules" "$BUILD_DIR/assets/node_modules"
+  fi
+fi
+
 #### Build the app
 
 mix deps.get --only "$MIX_ENV" || (echo "Fetching mix deps failed" && exit 1)
 mix compile --force || (echo "Compilation failed" && exit 1)
 mix deps.clean --unused
+
+#### Release
+
+mix release "$RELEASE_NAME"
+ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/.heroku/elixir/release"
 
 #### Cache artifacts
 
@@ -116,10 +140,15 @@ rm -rf "$CACHE_DIR/elixir/mix"
 rm -rf "$CACHE_DIR/elixir/hex"
 rm -rf "$CACHE_DIR/elixir/deps"
 rm -rf "$CACHE_DIR/elixir/_build"
+rm -rf "$CACHE_DIR/node/node_modules"
 
 cp -pR "$BUILD_DIR/.mix" "$CACHE_DIR/elixir/mix"
 cp -pR "$BUILD_DIR/.hex" "$CACHE_DIR/elixir/hex"
 cp -pR "$BUILD_DIR/deps" "$CACHE_DIR/elixir/deps"
 cp -pR "$BUILD_DIR/_build" "$CACHE_DIR/elixir/_build"
+
+if [ -d "$BUILD_DIR/assets/package.json" ]; then
+  cp -pR "$BUILD_DIR/assets/node_modules" "$CACHE_DIR/node/node_modules"
+fi
 
 output_info "Compiled."

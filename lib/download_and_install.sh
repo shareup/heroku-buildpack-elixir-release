@@ -17,14 +17,15 @@ download_and_install_erlang() {
     echo "Downloading OTP $otp_version"
     curl -s "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
 
-    tar xzf "$tarpath" -C "$buildpath" --strip-components=1
+    tar xzf "$tarpath" -C "$build_dir" --strip-components=1
     $build_path/Install -minimal "$install_dir"
 
     chmod +x "$install_dir/bin/*"
-    export PATH="$install_dir/bin:$PATH"
   else
     echo "Using cached OTP $otp_version"
   fi
+
+  export PATH="$install_dir/bin:$PATH"
 }
 
 download_and_install_elixir() {
@@ -32,11 +33,6 @@ download_and_install_elixir() {
   local otp_version="$2"
   local install_dir="$3"
   local cache_dir="$4"
-
-  # Prefix with a 'v' if not present
-  if [[ "$elixir_version" =~ ^[0-9]+\.[0-9]+ ]]; then
-    elixir_version="v$elixir_version"
-  fi
 
   local filename="$elixir_version-otp-$otp_version.zip"
   local url="https://repo.hex.pm/builds/elixir/v$filename"
@@ -52,15 +48,46 @@ download_and_install_elixir() {
 
     if [ "$?" -ne "0" ]; then
       echo "Unable to download an elixir for OTP $otp_version, falling back to generic elixir version"
-      local fallback_url="https://repo.hex.pm/builds/elixir/$elixir_version.zip"
+      local fallback_url="https://repo.hex.pm/builds/elixir/v$elixir_version.zip"
       curl -s "$fallback_url" -o "$tarpath" || (echo "Unable to download elixir" && exit 1)
     fi
 
     unzip -q "$tarpath" -d "$install_dir/"
 
     chmod +x "$install_dir/bin/*"
-    export PATH="$install_dir/bin:$PATH"
   else
     echo "Using cached elixir $elixir_version"
+  fi
+
+  export PATH="$install_dir/bin:$PATH"
+}
+
+download_and_install_node() {
+  local node_version="$1"
+  local npm_version="$2"
+  local install_dir="$3"
+  local cache_dir="$4"
+
+  local os="$(uname | tr A-Z a-z)"
+  local filename="node-v$version-$os-x86.tar.gz"
+  local url="http://s3pository.heroku.com/node/v$version/$filename"
+  local tarpath="$cache_dir/$filename"
+
+  if [ ! -f "$tarpath" ]; then
+    echo "Downloading node"
+    curl -s "$url" -o "$tarpath" || (echo "Unable to download node" && exit 1)
+
+    tar xzf "$tarpath" -C "$install_dir" --strip-components=1
+
+    chmod +x "$install_dir/bin/*"
+  else
+    echo "Using cached node $node_version"
+  fi
+
+  export PATH="$install_dir/bin:$PATH"
+
+  if [[ `npm --version` != "$npm_version" ]]; then
+    echo "Updating npm to $npm_version"
+    npm install --unsafe-perm --quiet -g npm@$npm_version
   fi
 }
