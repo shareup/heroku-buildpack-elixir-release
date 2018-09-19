@@ -11,7 +11,7 @@ download_and_install_erlang() {
   local filename="otp_src_$otp_version.tar.gz"
   local url="http://erlang.org/download/$filename"
   local tarpath="$cache_dir/$filename"
-  local build_dir="$cache_dir/build/"
+  local build_dir="$cache_dir/build"
   export ERL_TOP="$build_dir"
 
   mkdir -p "$build_dir"
