@@ -28,7 +28,7 @@ download_and_install_erlang() {
     echo "Compiling erlang, this could take a few minutes"
 
     cd $build_dir
-    .configure
+    ./configure
     make
     make RELEASE_ROOT="$install_dir" release
     cd -
