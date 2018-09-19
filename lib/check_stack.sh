@@ -9,7 +9,7 @@ function check_stack() {
     exit 1
   fi
 
-  if [ ! -f "$cache_dir/stack" ] || [ $(cat "$cache_dir/stack") != "$stack" ]; then
+  if [ -f "$cache_dir/stack" ] && [ $(cat "$cache_dir/stack") != "$stack" ]; then
     echo "Stack changed, will rebuild"
     rm -rf "$cache_dir/*"
   fi
