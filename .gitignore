@@ -1,2 +1,2 @@
 .DS_STORE
-otp/builds/*
+docker/otp/builds/*

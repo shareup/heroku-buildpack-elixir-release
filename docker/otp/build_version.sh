@@ -3,7 +3,15 @@
 set -e
 set -x
 
-OTP_VERSION="${1:-21.0.9}"
+cd $(dirname ${0:-})
+
+OTP_VERSION="$1"
+
+if [[ -z "$OTP_VERSION" ]]; then
+  echo "Must provide the OTP version as an argument"
+  exit 1
+fi
+
 TAG="heroku-otp-build-$OTP_VERSION"
 NAME="$TAG-container"
 FILENAME="OTP-$OTP_VERSION.tar.gz"
