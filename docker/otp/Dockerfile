@@ -19,7 +19,7 @@ ENV URL="https://github.com/erlang/otp/archive/OTP-${OTP_VERSION}.tar.gz"
 ENV DOWNLOAD_TARPATH="/home/download-OTP-${OTP_VERSION}.tar.gz"
 ENV COMPILED_TARPATH="/home/OTP-${OTP_VERSION}.tar.gz"
 
-RUN curl -L "${URL}" -o "${DOWNLOAD_TARPATH}"
+RUN curl -f -L "${URL}" -o "${DOWNLOAD_TARPATH}"
 RUN tar xzf "${DOWNLOAD_TARPATH}" -C /home/builderl --strip-components=1
 
 WORKDIR /home/builderl
