@@ -1,15 +1,15 @@
 ARG OTP_VERSION
 ARG ELIXIR_VERSION
 
-FROM "heroku-otp-build-${OTP_VERSION}"
-
-RUN mkdir -p /home/buildex
+FROM "heroku-otp-build:${OTP_VERSION}"
 
 ENV URL="https://github.com/elixir-lang/elixir/archive/v${ELIXIR_VERSION}.tar.gz"
 ENV DOWNLOAD_TARPATH="/home/download-elixir-${ELIXIR_VERSION}.tar.gz"
 ENV COMPILED_TARPATH="/home/elixir-${ELIXIR_VERSION}-OTP-${OTP_VERSION}.tar.gz"
 
-RUN curl -L "${URL} " -o "${DOWNLOAD_TARPATH}"
+RUN mkdir -p /home/buildex
+
+RUN curl -L "${URL}" -o "${DOWNLOAD_TARPATH}"
 RUN tar xzf "${DOWNLOAD_TARPATH}" -C /home/buildex --strip-components=1
 
 WORKDIR /home/buildex

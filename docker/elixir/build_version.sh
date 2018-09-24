@@ -18,16 +18,16 @@ if [[ -z "$ELIXIR_VERSION" ]]; then
   exit 1
 fi
 
-TAG="heroku-elixir-build-$ELIXIR_VERSION"
-NAME="$TAG-container"
+TAG="heroku-elixir-build:$ELIXIR_VERSION"
+NAME="heroku-elixir-build-$ELIXIR_VERSION-container"
 FILENAME="elixir-$ELIXIR_VERSION-OTP-$OTP_VERSION.tar.gz"
 TARPATH="/home/$FILENAME"
 BUCKET="${BUCKET:-heroku-buildpack-elixir-release-default}"
 ACL="${ACL:-public-read}"
 
-mkdir -p ./builds/
-
 ../otp/build_version.sh "$OTP_VERSION"
+
+mkdir -p ./builds/
 
 docker build -t "$TAG" --build-arg OTP_VERSION="$OTP_VERSION" --build-arg ELIXIR_VERSION="$ELIXIR_VERSION" .
 docker run --name="$NAME" "$TAG"
