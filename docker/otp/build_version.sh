@@ -28,5 +28,3 @@ docker cp "$NAME:$TARPATH" ./builds/
 
 docker stop "$NAME"
 docker rm "$NAME"
-
-aws s3 cp "builds/$FILENAME" "s3://$BUCKET/$FILENAME" --acl "$ACL"
