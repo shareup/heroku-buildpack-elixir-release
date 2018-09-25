@@ -22,7 +22,7 @@ download_and_install_erlang() {
     echo "Downloading OTP $otp_version"
     curl -# -f "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
 
-    tar xf "$tarpath" -C "$install_dir" --strip-components=1
+    tar xf "$tarpath" -C "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
@@ -55,7 +55,7 @@ download_and_install_elixir() {
     echo "Downloading elixir $elixir_version"
     curl -# -f "$url" -o "$tarpath"
 
-    tar xf "$tarpath" -d "$install_dir/"
+    tar xf "$tarpath" -d "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
@@ -83,7 +83,7 @@ download_and_install_node() {
     echo "Downloading node"
     curl -# -f "$url" -o "$tarpath" || (echo "Unable to download node" && exit 1)
 
-    tar xf "$tarpath" -C "$install_dir" --strip-components=1
+    tar xf "$tarpath" -C "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
