@@ -20,7 +20,7 @@ ENV DOWNLOAD_TARPATH="/home/download-OTP-${OTP_VERSION}.tar.gz"
 ENV COMPILED_TARPATH="/home/OTP-${OTP_VERSION}.tar.gz"
 
 RUN curl -f -L "${URL}" -o "${DOWNLOAD_TARPATH}"
-RUN tar xzf "${DOWNLOAD_TARPATH}" -C /home/builderl --strip-components=1
+RUN tar xf "${DOWNLOAD_TARPATH}" -C /home/builderl --strip-components=1
 
 WORKDIR /home/builderl
 
@@ -28,7 +28,7 @@ RUN ./otp_build autoconf && \
   ./configure --with-ssl --enable-dirty-schedulers && \
   make && \
   make release && \
-  tar zcf "${COMPILED_TARPATH}" /home/builderl/release/x86_64-unknown-linux-gnu/
+  tar cf "${COMPILED_TARPATH}" -C /home/builderl/ .
 
 ENV PATH="/home/builderl/bin/:$PATH"
 

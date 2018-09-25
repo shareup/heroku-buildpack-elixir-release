@@ -12,7 +12,7 @@ ENV COMPILED_TARPATH="/home/elixir-${ELIXIR_VERSION}-OTP-${OTP_VERSION}.tar.gz"
 RUN mkdir -p /home/buildex
 
 RUN curl -f -L "${URL}" -o "${DOWNLOAD_TARPATH}"
-RUN tar xzf "${DOWNLOAD_TARPATH}" -C /home/buildex --strip-components=1
+RUN tar xf "${DOWNLOAD_TARPATH}" -C /home/buildex --strip-components=1
 
 WORKDIR /home/buildex
 
@@ -23,7 +23,7 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 RUN make && \
-  tar zcf "${COMPILED_TARPATH}" /home/buildex/
+  tar cf "${COMPILED_TARPATH}" -C /home/buildex/ .
 
 ENV PATH="/home/buildex/bin/:$PATH"
 
