@@ -20,11 +20,13 @@ download_and_install_erlang() {
     rm -rf "$install_dir/*"
 
     echo "Downloading OTP $otp_version"
-    curl -# -f "$url" -o "$tarpath" || (echo "Unable to download erlang" && exit 1)
+    curl -# -f "$url" -o "$tarpath"
 
     tar xf "$tarpath" -C "$install_dir"
 
-    chmod +x "$install_dir/bin/*"
+    # unpack the release
+    chmod +x "$install_dir/Install"
+    $install_dir/Install -minimal "$install_dir"
   else
     echo "Using cached OTP $otp_version"
   fi
@@ -81,7 +83,7 @@ download_and_install_node() {
 
   if [ ! -f "$tarpath" ]; then
     echo "Downloading node"
-    curl -# -f "$url" -o "$tarpath" || (echo "Unable to download node" && exit 1)
+    curl -# -f "$url" -o "$tarpath"
 
     tar xf "$tarpath" -C "$install_dir"
 

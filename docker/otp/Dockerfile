@@ -27,8 +27,9 @@ WORKDIR /home/builderl
 RUN ./otp_build autoconf && \
   ./configure --with-ssl --enable-dirty-schedulers && \
   make && \
-  make release && \
-  tar cf "${COMPILED_TARPATH}" -C /home/builderl/ .
+  make release
+
+RUN tar cf "${COMPILED_TARPATH}" -C /home/builderl/release/x86_64-unknown-linux-gnu/ .
 
 ENV PATH="/home/builderl/bin/:$PATH"
 

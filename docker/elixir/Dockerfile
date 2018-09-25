@@ -22,8 +22,8 @@ ENV LANG=en_US.UTF-8
 ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
-RUN make && \
-  tar cf "${COMPILED_TARPATH}" -C /home/buildex/ .
+RUN make
+RUN tar cf "${COMPILED_TARPATH}" -C /home/buildex/ .
 
 ENV PATH="/home/buildex/bin/:$PATH"
 
