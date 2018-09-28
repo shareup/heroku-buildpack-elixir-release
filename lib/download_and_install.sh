@@ -59,6 +59,9 @@ download_and_install_elixir() {
 
     tar xf "$tarpath" -C "$install_dir"
 
+    echo $install_dir
+    echo $(ls $install_dir)
+
     chmod +x "$install_dir/bin/*"
   else
     echo "Using cached elixir $elixir_version"
