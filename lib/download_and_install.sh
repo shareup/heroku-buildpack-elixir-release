@@ -57,7 +57,7 @@ download_and_install_elixir() {
     echo "Downloading elixir $elixir_version"
     curl -# -f "$url" -o "$tarpath"
 
-    tar xf "$tarpath" -d "$install_dir"
+    tar xf "$tarpath" -C "$install_dir"
 
     chmod +x "$install_dir/bin/*"
   else
