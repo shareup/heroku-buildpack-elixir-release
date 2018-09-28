@@ -59,7 +59,7 @@ download_and_install_elixir() {
 
     tar xf "$tarpath" -C "$install_dir"
 
-    find "$install_dir/bin/" -type f -d 1 | xargs chmod +x
+    find $install_dir/bin/ -type f -d 1 | xargs chmod +x
   else
     echo "Using cached elixir $elixir_version"
   fi
@@ -87,7 +87,7 @@ download_and_install_node() {
 
     tar xf "$tarpath" -C "$install_dir"
 
-    find "$install_dir/bin/" -type f -d 1 | xargs chmod +x
+    find $install_dir/bin/ -type f -d 1 | xargs chmod +x
   else
     echo "Using cached node $node_version"
   fi
