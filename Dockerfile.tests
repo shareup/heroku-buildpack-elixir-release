@@ -1,0 +1,26 @@
+FROM heroku/heroku:16
+
+ARG OTP_VERSION
+ARG ELIXIR_VERSION
+ARG REPO_URL
+
+ENV OTP_VERSION="${OTP_VERSION}"
+ENV ELIXIR_VERSION="${ELIXIR_VERSION}"
+ENV STACK="heroku-16"
+
+# Elixir requires a UTF8 locale
+RUN locale-gen en_US.UTF-8
+ENV LANG=en_US.UTF-8
+ENV LANGUAGE=en_US:en
+ENV LC_ALL=en_US.UTF-8
+
+RUN mkdir /buildpack
+
+COPY . /buildpack/
+
+RUN git clone "${REPO_URL}" /app
+WORKDIR /app
+
+RUN /buildpack/bin/compile
+
+CMD /bin/bash

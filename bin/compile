@@ -94,6 +94,8 @@ download_and_install_elixir "$ELIXIR_VERSION" "$OTP_VERSION" "$BUILD_DIR/.heroku
 
 mkdir -p "$CACHE_DIR/node"
 
+SKIP_NODE="${SKIP_NODE:-false}"
+
 if [[ "$SKIP_NODE" != "true" ]]; then
   download_and_install_node "$NODE_VERSION" "$NPM_VERSION" "$BUILD_DIR/.heroku/node" "$CACHE_DIR/node" | output "$LOG_FILE"
 fi
@@ -112,8 +114,8 @@ fi
 
 ##### Install hex and rebar if they are missing
 
-mix local.hex --if-missing
-mix local.rebar --if-missing
+mix local.hex --force --if-missing
+mix local.rebar --force --if-missing
 
 #### Restore deps and _build
 

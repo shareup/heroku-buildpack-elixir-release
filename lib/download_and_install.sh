@@ -59,7 +59,7 @@ download_and_install_elixir() {
 
     tar xf "$tarpath" -C "$install_dir"
 
-    find $install_dir/bin/ -type f -d 1 | xargs chmod +x
+    chmod +x $install_dir/bin/*
   else
     echo "Using cached elixir $elixir_version"
   fi
@@ -77,17 +77,17 @@ download_and_install_node() {
   mkdir -p "$cache_dir"
 
   local os="$(uname | tr A-Z a-z)"
-  local filename="node-v$version-linux-x64.tar.xz"
-  local url="https://nodejs.org/dist/v$version/$filename"
+  local filename="node-v$node_version-linux-x64.tar.gz"
+  local url="https://nodejs.org/dist/v$node_version/$filename"
   local tarpath="$cache_dir/$filename"
 
   if [ ! -f "$tarpath" ]; then
     echo "Downloading node"
-    curl -# -f "$url" -o "$tarpath"
+    curl -# -L -f "$url" -o "$tarpath"
 
-    tar xf "$tarpath" -C "$install_dir"
+    tar xf "$tarpath" -C "$install_dir" --strip-components=1
 
-    find $install_dir/bin/ -type f -d 1 | xargs chmod +x
+    chmod +x $install_dir/bin/*
   else
     echo "Using cached node $node_version"
   fi
