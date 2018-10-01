@@ -15,12 +15,14 @@ ENV LANGUAGE=en_US:en
 ENV LC_ALL=en_US.UTF-8
 
 RUN mkdir /buildpack
+RUN mkdir /cache
+RUN mkdir /env
 
 COPY . /buildpack/
 
 RUN git clone "${REPO_URL}" /app
 WORKDIR /app
 
-RUN /buildpack/bin/compile
+RUN /buildpack/bin/compile /app /cache /env
 
 CMD /bin/bash

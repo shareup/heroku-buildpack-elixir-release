@@ -25,6 +25,14 @@ echo "" > "$LOG_FILE"
 export MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
 export MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
 
+export MIX_HOME="$BUILD_DIR/.mix"
+mkdir -p "$MIX_HOME"
+
+export HEX_HOME="$BUILD_DIR/.hex"
+mkdir -p "$HEX_HOME"
+
+mkdir -p "$BUILD_DIR/bin"
+
 ### Dependencies
 
 source "$BP_DIR/lib/output.sh"
@@ -142,7 +150,8 @@ mix deps.clean --unused
 #### Release
 
 mix release "$RELEASE_NAME"
-ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/.heroku/elixir/release"
+ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/elixir_release"
+ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/$MIX_APP_NAME"
 
 #### Cache artifacts
 
