@@ -27,7 +27,6 @@ export MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/
 export MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
 
 echo "$MIX_APP_NAME" > "$BUILD_DIR/MIX_APP_NAME"
-echo "$MIX_APP_VERSION" > "$BUILD_DIR/MIX_APP_VERSION"
 
 export MIX_HOME="$BUILD_DIR/.mix"
 mkdir -p "$MIX_HOME"
