@@ -12,6 +12,7 @@ BUILD_DIR="${1:-}"
 CACHE_DIR="${2:-}"
 ENV_DIR="${3:-}"
 BP_DIR="$(cd $(dirname ${0:-}); cd ..; pwd)"
+IS_TEST="${IS_TEST:-false}"
 
 cd "$BUILD_DIR"
 
@@ -76,11 +77,6 @@ export ALWAYS_REBUILD="${ALWAYS_REBUILD:-false}"
 
 echo "" | output "$LOG_FILE"
 printenv | grep -E '^(MIX_|OTP_|ELIXIR_|NODE_|NPM_|RELEASE_)' | output "$LOG_FILE"
-
-#### Profile
-
-mkdir -p "$BUILD_DIR/.profile.d"
-cp -ar "$BP_DIR/profile/." "$BUILD_DIR/.profile.d/"
 
 #### Remove cache if ALWAYS_REBUILD
 
@@ -175,18 +171,24 @@ if [ -d "$BUILD_DIR/assets/package.json" ]; then
   cp -pR "$BUILD_DIR/assets/node_modules" "$CACHE_DIR/node/node_modules"
 fi
 
-#### Delete artifacts from slug
+# IS_TEST is set to true in bin/test-compile
+if [[ "$IS_TEST" != "true" ]]; then
+  ### Profile
+  mkdir -p "$BUILD_DIR/.profile.d"
+  cp -ar "$BP_DIR/profile/." "$BUILD_DIR/.profile.d/"
 
-rm -rf "$BUILD_DIR/.mix"
-rm -rf "$BUILD_DIR/.hex"
-rm -rf "$BUILD_DIR/deps"
+  #### Delete artifacts from slug
+  rm -rf "$BUILD_DIR/.mix"
+  rm -rf "$BUILD_DIR/.hex"
+  rm -rf "$BUILD_DIR/deps"
 
-if [ -d "$BUILD_DIR/assets/package.json" ]; then
-  rm -rf "$BUILD_DIR/assets/node_modules"
+  if [ -d "$BUILD_DIR/assets/package.json" ]; then
+    rm -rf "$BUILD_DIR/assets/node_modules"
+  fi
+
+  rm -rf "$BUILD_DIR/.heroku/erlang"
+  rm -rf "$BUILD_DIR/.heroku/elixir"
+  rm -rf "$BUILD_DIR/.heroku/node"
 fi
-
-rm -rf "$BUILD_DIR/.heroku/erlang"
-rm -rf "$BUILD_DIR/.heroku/elixir"
-rm -rf "$BUILD_DIR/.heroku/node"
 
 output_info "Compiled."
