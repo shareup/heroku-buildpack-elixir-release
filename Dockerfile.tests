@@ -18,11 +18,19 @@ RUN mkdir /buildpack
 RUN mkdir /cache
 RUN mkdir /env
 
-COPY . /buildpack/
-
 RUN git clone "${REPO_URL}" /app
 WORKDIR /app
 
+RUN mkdir /buildpack/{bin,lib,profile,tests}
+
+COPY ./bin/ /buildpack/bin/
+COPY ./lib/ /buildpack/lib/
+COPY ./profile/ /buildpack/profile/
+
 RUN /buildpack/bin/compile /app /cache /env
 
-CMD /bin/bash
+COPY ./tests/ /buildpack/tests/
+
+RUN /buildpack/tests/sanity-checks.sh /app
+
+CMD /app/bin/elixir_release

@@ -1,0 +1,31 @@
+version: '3.1'
+
+services:
+  db:
+    build:
+      context: .
+      dockerfile: Dockerfile.postgres
+    image: heroku-buildpack-elixir-release-tests-db
+    restart: always
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: pa55w0rd
+
+  web:
+    depends_on:
+      - db
+    build:
+      context: ..
+      dockerfile: Dockerfile.tests
+      args:
+        OTP_VERSION: 21.0
+        ELIXIR_VERSION: 1.7
+        REPO_URL: https://github.com/shareup-app/example_phoenix_app_for_heroku.git
+    image: heroku-buildpack-elixir-release-tests-web
+    restart: always
+    environment:
+      PORT: 4000
+      WEB_HOST: example.com
+      DATABASE_URL: postgres://postgres:pa55w0rd@localhost:5432/example_prod
+    ports:
+      - 4000:4000

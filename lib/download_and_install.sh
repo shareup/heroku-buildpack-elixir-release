@@ -21,15 +21,15 @@ download_and_install_erlang() {
 
     echo "Downloading OTP $otp_version"
     curl -# -f "$url" -o "$tarpath"
-
-    tar xf "$tarpath" -C "$install_dir"
-
-    # unpack the release
-    chmod +x "$install_dir/Install"
-    $install_dir/Install -minimal "$install_dir"
   else
     echo "Using cached OTP $otp_version"
   fi
+
+  tar xf "$tarpath" -C "$install_dir"
+
+  # unpack the release
+  chmod +x "$install_dir/Install"
+  $install_dir/Install -minimal "$install_dir"
 
   export PATH="$install_dir/bin:$PATH"
 }
@@ -56,13 +56,13 @@ download_and_install_elixir() {
 
     echo "Downloading elixir $elixir_version"
     curl -# -f "$url" -o "$tarpath"
-
-    tar xf "$tarpath" -C "$install_dir"
-
-    chmod +x $install_dir/bin/*
   else
     echo "Using cached elixir $elixir_version"
   fi
+
+  tar xf "$tarpath" -C "$install_dir"
+
+  chmod +x $install_dir/bin/*
 
   export PATH="$install_dir/bin:$PATH"
 }
@@ -84,13 +84,13 @@ download_and_install_node() {
   if [ ! -f "$tarpath" ]; then
     echo "Downloading node"
     curl -# -L -f "$url" -o "$tarpath"
-
-    tar xf "$tarpath" -C "$install_dir" --strip-components=1
-
-    chmod +x $install_dir/bin/*
   else
     echo "Using cached node $node_version"
   fi
+
+  tar xf "$tarpath" -C "$install_dir" --strip-components=1
+
+  chmod +x $install_dir/bin/*
 
   export PATH="$install_dir/bin:$PATH"
 
