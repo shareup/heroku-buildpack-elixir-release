@@ -186,4 +186,8 @@ if [ -d "$BUILD_DIR/assets/package.json" ]; then
   rm -rf "$BUILD_DIR/assets/node_modules"
 fi
 
+rm -rf "$BUILD_DIR/.heroku/erlang"
+rm -rf "$BUILD_DIR/.heroku/elixir"
+rm -rf "$BUILD_DIR/.heroku/node"
+
 output_info "Compiled."
