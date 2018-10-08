@@ -1,0 +1,20 @@
+{
+  "environments": {
+    "test": {
+      "env": {
+        "MIX_ENV": "test"
+      },
+      "addons": [
+        "heroku-postgresql:hobby-dev"
+      ],
+      "buildpacks": [
+        {
+          "url": "https://github.com/shareup-app/heroku-buildpack-elixir-release.git"
+        }
+      ],
+      "scripts": {
+        "test": "mix test"
+      }
+    }
+  }
+}
