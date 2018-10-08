@@ -150,9 +150,11 @@ mix deps.clean --unused
 
 #### Release
 
-mix release "$RELEASE_NAME"
-
-cp "$BP_DIR/lib/boot_release.sh" "$BUILD_DIR/bin/boot_release"
+# IS_TEST is set to true in bin/test-compile
+if [[ "$IS_TEST" != "true" ]]; then
+  mix release "$RELEASE_NAME"
+  cp "$BP_DIR/lib/boot_release.sh" "$BUILD_DIR/bin/boot_release"
+fi
 
 #### Cache artifacts
 
