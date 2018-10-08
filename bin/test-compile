@@ -8,5 +8,5 @@ BP_DIR=$(cd "$(dirname ${0:-})"; cd ..; pwd)
 
 "$BP_DIR/bin/compile" "$1" "$2" "$3"
 
-mkdir -p "$BUILD_DIR/.profile.d"
-cp -ar "$BP_DIR/ci-profile/." "$BUILD_DIR/.profile.d/"
+mkdir -p "$1/.profile.d"
+cp -ar "$BP_DIR/ci-profile/." "$1/.profile.d/"
