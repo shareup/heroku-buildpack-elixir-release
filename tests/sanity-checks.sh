@@ -19,7 +19,7 @@ pass_test() {
 
 echo "Checking for elixir_release symlink"
 
-if [[ ! -L "$BUILD_DIR/bin/elixir_release" ]]; then
+if [[ ! -f "$BUILD_DIR/bin/boot_release" ]]; then
   fail_test "Could not find release symlink"
 else
   pass_test

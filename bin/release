@@ -5,5 +5,5 @@ cat << EOF
 addons:
   - heroku-postgresql
 default_process_types:
-  web: elixir_release foreground
+  web: boot_release
 EOF

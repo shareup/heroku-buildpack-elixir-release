@@ -26,6 +26,9 @@ echo "" > "$LOG_FILE"
 export MIX_APP_NAME="$(grep 'app:' mix.exs | sed -e 's/\[//g' -e 's/ //g' -e 's/app://' -e 's/[:,]//g')"
 export MIX_APP_VERSION="$(grep 'version:' mix.exs | cut -d '"' -f2)"
 
+echo "$MIX_APP_NAME" > "$BUILD_DIR/MIX_APP_NAME"
+echo "$MIX_APP_VERSION" > "$BUILD_DIR/MIX_APP_VERSION"
+
 export MIX_HOME="$BUILD_DIR/.mix"
 mkdir -p "$MIX_HOME"
 
@@ -154,11 +157,7 @@ mix deps.clean --unused
 
 mix release "$RELEASE_NAME"
 
-echo "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/elixir_release"
-echo "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/$MIX_APP_NAME"
-
-ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/elixir_release"
-ln -s -n -f "$BUILD_DIR/_build/$MIX_ENV/$MIX_APP_NAME/releases/$MIX_APP_VERSION/$MIX_APP_NAME.sh" "$BUILD_DIR/bin/$MIX_APP_NAME"
+cp "$BP_DIR/lib/boot_release.sh" "$BUILD_DIR/bin/boot_release"
 
 #### Cache artifacts
 
@@ -182,7 +181,6 @@ fi
 rm -rf "$BUILD_DIR/.mix"
 rm -rf "$BUILD_DIR/.hex"
 rm -rf "$BUILD_DIR/deps"
-# rm -rf "$BUILD_DIR/_build"
 
 if [ -d "$BUILD_DIR/assets/package.json" ]; then
   rm -rf "$BUILD_DIR/assets/node_modules"
