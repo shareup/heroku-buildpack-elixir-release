@@ -2,4 +2,4 @@
 
 cd "${1:-}"
 
-mix do deps.get, test
+mix test
