@@ -10,3 +10,7 @@ BP_DIR=$(cd "$(dirname ${0:-})"; cd ..; pwd)
 
 mkdir -p "$1/.profile.d"
 cp -ar "$BP_DIR/ci-profile/." "$1/.profile.d/"
+
+cd "$1"
+
+mix do deps.get, compile
