@@ -3,14 +3,12 @@
 set -e
 
 export IS_TEST=true
+export MIX_ENV=test
 
 BP_DIR=$(cd "$(dirname ${0:-})"; cd ..; pwd)
+BUILD_DIR="${1:-}"
 
 "$BP_DIR/bin/compile" "$1" "$2" "$3"
 
-mkdir -p "$1/.profile.d"
-cp -ar "$BP_DIR/ci-profile/." "$1/.profile.d/"
-
-cd "$1"
-
-mix do deps.get, compile
+mkdir -p "$BUILD_DIR/.profile.d"
+cp -ar "$BP_DIR/ci-profile/." "$BUILD_DIR/.profile.d/"
