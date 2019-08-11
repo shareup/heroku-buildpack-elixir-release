@@ -21,16 +21,33 @@ build_and_upload() {
 
   aws s3 cp "builds/$filename" "$s3_filename" --acl "$ACL"
 
-  aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$patch_version-OTP-$otp_minor_version.tar.gz" --acl "$ACL"
-  aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$patch_version-OTP-$otp_major_version.tar.gz" --acl "$ACL"
+  if [[ "$patch_version" != "" ]]; then
+    if [[ "$otp_minor_version" != "" ]]; then
+      aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$patch_version-OTP-$otp_minor_version.tar.gz" --acl "$ACL"
+    fi
 
-  aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_patch_version.tar.gz" --acl "$ACL"
-  aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_minor_version.tar.gz" --acl "$ACL"
-  aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_major_version.tar.gz" --acl "$ACL"
+    if [[ "$otp_major_version" != "" ]]; then
+      aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$patch_version-OTP-$otp_major_version.tar.gz" --acl "$ACL"
+    fi
+  fi
+
+  if [[ "$minor_version" != "" ]]; then
+    aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_patch_version.tar.gz" --acl "$ACL"
+
+    if [[ "$otp_minor_version" != "" ]]; then
+      aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_minor_version.tar.gz" --acl "$ACL"
+    fi
+
+    if [[ "$otp_major_version" != "" ]]; then
+      aws s3 cp "$s3_filename" "s3://$BUCKET/elixir-$minor_version-OTP-$otp_major_version.tar.gz" --acl "$ACL"
+    fi
+  fi
 }
 
 while IFS=, read -r otp_patch_version otp_minor_version otp_major_version; do
   while IFS=, read -r patch_version minor_version; do
     build_and_upload "$otp_patch_version" "$otp_minor_version" "$otp_major_version" "$patch_version" "$minor_version"
+    break
   done < versions.csv
+  break
 done < ../otp/versions.csv

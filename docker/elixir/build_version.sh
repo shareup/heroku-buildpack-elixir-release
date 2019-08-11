@@ -25,7 +25,9 @@ TARPATH="/home/$FILENAME"
 BUCKET="${BUCKET:-heroku-buildpack-elixir-release-default}"
 ACL="${ACL:-public-read}"
 
-../otp/build_version.sh "$OTP_VERSION"
+if [[ ! -f "../otp/builds/OTP-$OTP_VERSION.tar.gz" ]]; then
+  ../otp/build_version.sh "$OTP_VERSION"
+fi
 
 mkdir -p ./builds/
 
