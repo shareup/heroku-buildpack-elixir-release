@@ -22,19 +22,25 @@ TAG="heroku-elixir-build:$ELIXIR_VERSION"
 NAME="heroku-elixir-build-$ELIXIR_VERSION-container"
 FILENAME="elixir-$ELIXIR_VERSION-OTP-$OTP_VERSION.tar.gz"
 TARPATH="/home/$FILENAME"
-BUCKET="${BUCKET:-heroku-buildpack-elixir-release-default}"
-ACL="${ACL:-public-read}"
 
-if [[ ! -f "../otp/builds/OTP-$OTP_VERSION.tar.gz" ]]; then
+if [[ ! $(docker image ls | grep "heroku-otp-build:${OTP_VERSION}" > /dev/null) ]]; then
   ../otp/build_version.sh "$OTP_VERSION"
 fi
 
 mkdir -p ./builds/
 
 docker build -t "$TAG" --build-arg OTP_VERSION="$OTP_VERSION" --build-arg ELIXIR_VERSION="$ELIXIR_VERSION" .
+
+docker container ls | grep $NAME > /dev/null && {
+  docker container rm $NAME
+}
+
 docker run --name="$NAME" "$TAG"
 
 docker cp "$NAME:$TARPATH" ./builds/
+
+mkdir -p ../../sums
+shasum -a 256 ./builds/$FILENAME > ../../sums/$FILENAME.sha256
 
 docker stop "$NAME"
 docker rm "$NAME"

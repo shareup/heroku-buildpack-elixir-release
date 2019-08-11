@@ -47,7 +47,7 @@ build_and_upload() {
 while IFS=, read -r otp_patch_version otp_minor_version otp_major_version; do
   while IFS=, read -r patch_version minor_version; do
     build_and_upload "$otp_patch_version" "$otp_minor_version" "$otp_major_version" "$patch_version" "$minor_version"
-    break
+    break # only do the first one for now
   done < versions.csv
-  break
+  break # only do the first one for now
 done < ../otp/versions.csv
