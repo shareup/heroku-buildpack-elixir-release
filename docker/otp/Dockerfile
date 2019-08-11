@@ -1,19 +1,8 @@
-FROM heroku/heroku:18
+FROM heroku/heroku:18-build
 
 RUN apt-get update
 
 ENV DEBIAN_FRONTEND="noninteractive"
-
-RUN apt-get install -y --no-install-recommends \
-  curl wget \
-  ca-certificates \
-  dpkg-dev \
-  gcc g++ \
-  make autoconf \
-  libncurses-dev \
-  libsctp-dev \
-  libssl-dev \
-  unixodbc-dev
 
 RUN mkdir -p /home/builderl
 

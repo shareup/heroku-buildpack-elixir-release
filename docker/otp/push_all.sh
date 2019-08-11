@@ -30,5 +30,4 @@ build_and_upload() {
 
 while IFS=, read -r patch_version minor_version major_version; do
   build_and_upload "$patch_version" "$minor_version" "$major_version"
-  break # only do the first one for now
 done < versions.csv
