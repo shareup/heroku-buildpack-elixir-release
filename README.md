@@ -1,6 +1,6 @@
 # Buildpack for building elixir application releases
 
-Includes build scripts for building all OTP releases `>= 20.3` and all elixir releases `>= 1.5.0`.
+Includes build scripts for building all OTP releases `>= 20.0` and all elixir releases `>= 1.9.0`.
 
 ## Usage
 
@@ -23,6 +23,7 @@ And set your elixir and OTP versions as ENV variables. Go ahead and use your `ap
   "env": {
     "OTP_VERSION": "22.0.7",
     // can provide "22_0" or "22" to auto-upgrade to newer patch or minor releases
+    //   /we are using "22_0" becuase "22.0" is a real version number (no patch was included)/
     // default is "22"
 
     "ELIXIR_VERSION": "1.9.1",
