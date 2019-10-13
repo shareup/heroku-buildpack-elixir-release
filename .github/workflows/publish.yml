@@ -1,0 +1,11 @@
+name: CI
+on:
+  release:
+    types: created 
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v1
+    - name: Push all
+      run: cd docker && ./push_all.sh
