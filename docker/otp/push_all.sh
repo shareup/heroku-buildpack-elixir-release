@@ -18,8 +18,14 @@ build_and_upload() {
   ./build_version.sh "$patch_version"
 
   aws s3 cp "builds/$filename" "$s3_filename" --acl "$ACL"
-  aws s3 cp "$s3_filename" "s3://$BUCKET/OTP-$minor_version.tar.gz" --acl "$ACL"
-  aws s3 cp "$s3_filename" "s3://$BUCKET/OTP-$major_version.tar.gz" --acl "$ACL"
+
+  if [[ "$minor_version" != "" ]]; then
+    aws s3 cp "$s3_filename" "s3://$BUCKET/OTP-$minor_version.tar.gz" --acl "$ACL"
+  fi
+
+  if [[ "$major_version" != "" ]]; then
+    aws s3 cp "$s3_filename" "s3://$BUCKET/OTP-$major_version.tar.gz" --acl "$ACL"
+  fi
 }
 
 while IFS=, read -r patch_version minor_version major_version; do

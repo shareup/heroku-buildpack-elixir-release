@@ -1,15 +1,8 @@
-FROM heroku/heroku:16
+FROM heroku/heroku:18-build
 
 RUN apt-get update
 
-RUN apt-get install -y \
-  curl wget ca-certificates \
-  gcc g++ \
-  make automake autoconf \
-  libwxgtk3.0-dev libgl1-mesa-dev libglu1-mesa-dev libpng3 \
-  libreadline-dev libncurses-dev libssl-dev libssh-dev \
-  libxslt-dev libffi-dev libtool unixodbc-dev \
-  fop xsltproc
+ENV DEBIAN_FRONTEND="noninteractive"
 
 RUN mkdir -p /home/builderl
 
@@ -24,12 +17,14 @@ RUN tar xf "${DOWNLOAD_TARPATH}" -C /home/builderl --strip-components=1
 
 WORKDIR /home/builderl
 
-RUN ./otp_build autoconf && \
-  ./configure --with-ssl --enable-dirty-schedulers && \
-  make && \
-  make release
+RUN ./otp_build autoconf
 
-RUN tar cf "${COMPILED_TARPATH}" -C /home/builderl/release/x86_64-unknown-linux-gnu/ .
+RUN ./configure --build="$(dpkg-architecture --query DEB_BUILD_GNU_TYPE)"
+
+RUN make -j$(nproc)
+RUN make release
+
+RUN tar cf "${COMPILED_TARPATH}" -C /home/builderl/release/x86_64-pc-linux-gnu/ .
 
 ENV PATH="/home/builderl/bin/:$PATH"
 

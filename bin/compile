@@ -64,13 +64,12 @@ export_env_dir "$ENV_DIR"
 
 output_info "Exported the env dir"
 
-export MIX_DEPS_CACHE="${MIX_DEPS_CACHE:-true}"
 export MIX_ENV="${MIX_ENV:-prod}"
-export OTP_VERSION="${OTP_VERSION:-21.0}"
-export ELIXIR_VERSION="${ELIXIR_VERSION:-1.7}"
-export NODE_VERSION="${NODE_VERSION:-8.12.0}"
-export NPM_VERSION="${NPM_VERSION:-6.4.1}"
-export RELEASE_NAME="${RELEASE_NAME:-default}"
+export OTP_VERSION="${OTP_VERSION:-22}"
+export ELIXIR_VERSION="${ELIXIR_VERSION:-1.9}"
+export NODE_VERSION="${NODE_VERSION:-10.16.0}"
+export NPM_VERSION="${NPM_VERSION:-6.10.1}"
+export RELEASE_NAME="${RELEASE_NAME:-}"
 export ALWAYS_REBUILD="${ALWAYS_REBUILD:-false}"
 
 #### Log the current important ENV vars
@@ -156,7 +155,12 @@ mix deps.clean --unused
 
 # IS_TEST is set to true in bin/test-compile
 if [[ "$IS_TEST" != "true" ]]; then
-  mix release "$RELEASE_NAME"
+  if [[ "$RELEASE_NAME" == "" ]]; then
+    mix release --overwrite
+  else
+    mix release "$RELEASE_NAME" --overwrite
+  fi
+
   cp "$BP_DIR/lib/boot_release.sh" "$BUILD_DIR/bin/boot"
 fi
 

@@ -22,9 +22,17 @@ ACL="${ACL:-public-read}"
 mkdir -p ./builds/
 
 docker build -t "$TAG" --build-arg OTP_VERSION="$OTP_VERSION" .
+
+docker container ls | grep $NAME > /dev/null && {
+  docker container rm $NAME
+}
+
 docker run --name="$NAME" "$TAG"
 
 docker cp "$NAME:$TARPATH" ./builds/
+
+mkdir -p ../../sums
+shasum -a 256 ./builds/$FILENAME > ../../sums/$FILENAME.sha256
 
 docker stop "$NAME"
 docker rm "$NAME"
