@@ -2,6 +2,8 @@
 
 Includes build scripts for building all OTP releases `>= 20.0` and all elixir releases `>= 1.9.0`.
 
+**Note: this is not production ready yet. While it is being using in production, the workflows for compiling and uploading artifacts are not finished and it is probably very unclear how to use this...**
+
 ## Usage
 
 Set your buildpack in your `app.json`:
@@ -53,5 +55,3 @@ And set your elixir and OTP versions as ENV variables. Go ahead and use your `ap
 
 1. I want to use elixir releases for my app on heroku
 2. Using other people's binaries for production isn't something I want to do
-
-
