@@ -20,7 +20,7 @@ Set your buildpack in your `app.json`:
 
 And set your elixir and OTP versions as ENV variables. Go ahead and use your `app.json`:
 
-```json
+```jsonc
 {
   "env": {
     "OTP_VERSION": "22.0.7",
